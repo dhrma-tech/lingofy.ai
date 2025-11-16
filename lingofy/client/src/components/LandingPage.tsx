@@ -44,8 +44,10 @@ const FeatureCard = ({ icon, title, description }: { icon: React.ReactNode, titl
             initial="hidden"
             animate={inView ? "visible" : "hidden"}
             transition={{ duration: 0.6, ease: 'easeOut' }}
+            whileHover={{ scale: 1.05, boxShadow: "0px 10px 20px rgba(0,0,0,0.05)" }}
+            className="h-full"
         >
-            <Card className="h-full">
+            <Card className="h-full transition-shadow">
                 <CardContent className="p-6 text-center flex flex-col items-center">
                     <div className="p-3 bg-primary/10 rounded-full mb-4">
                         {icon}

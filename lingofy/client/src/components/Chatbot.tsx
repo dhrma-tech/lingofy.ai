@@ -1,78 +1,51 @@
 import { useState, useRef, useEffect, FormEvent } from 'react';
-import { GoogleGenAI, Chat } from "@google/genai";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/Card';
 import { Button } from './ui/Button';
 import { Input } from './ui/Input';
 import { ScrollArea } from './ui/ScrollArea';
 import { Bot, Loader2, Send, User, X } from 'lucide-react';
 import { cn } from '../lib/utils';
+import { motion } from 'framer-motion';
 
-interface ChatbotProps {
-    onClose: () => void;
-}
-
-type Message = {
+export type Message = {
     role: 'user' | 'model';
     content: string;
 };
 
-export function Chatbot({ onClose }: ChatbotProps) {
-    const [messages, setMessages] = useState<Message[]>([
-        { role: 'model', content: "Hello! I'm the Lingofy assistant. How can I help you today?" }
-    ]);
+interface ChatbotProps {
+    messages: Message[];
+    isLoading: boolean;
+    onSendMessage: (message: string) => void;
+    onClose: () => void;
+}
+
+export function Chatbot({ messages, isLoading, onSendMessage, onClose }: ChatbotProps) {
     const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const chatRef = useRef<Chat | null>(null);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
+    const viewportRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        try {
-            const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
-            chatRef.current = ai.chats.create({
-                model: 'gemini-2.5-flash',
-                config: {
-                    systemInstruction: 'You are a friendly and helpful AI assistant for Lingofy, an e-commerce platform for creators. Your goal is to help creators manage their online store. Keep your answers concise and easy to understand.',
-                },
-            });
-        } catch (error) {
-            console.error("Failed to initialize Gemini:", error);
-            setMessages(prev => [...prev, { role: 'model', content: "Sorry, I couldn't connect to the AI service. Please check the API key." }]);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (scrollAreaRef.current) {
-            scrollAreaRef.current.scrollTo({
-                top: scrollAreaRef.current.scrollHeight,
-                behavior: 'smooth'
-            });
+        // Scroll to bottom when new messages are added
+        const viewport = viewportRef.current;
+        if (viewport) {
+           viewport.scrollTo({ top: viewport.scrollHeight, behavior: 'smooth' });
         }
     }, [messages]);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        if (!input.trim() || isLoading || !chatRef.current) return;
-
-        const userMessage: Message = { role: 'user', content: input };
-        setMessages(prev => [...prev, userMessage]);
+        onSendMessage(input);
         setInput('');
-        setIsLoading(true);
-
-        try {
-            const result = await chatRef.current.sendMessage({ message: input });
-            const modelMessage: Message = { role: 'model', content: result.text };
-            setMessages(prev => [...prev, modelMessage]);
-        } catch (error) {
-            console.error('Gemini API error:', error);
-            const errorMessage: Message = { role: 'model', content: 'Oops! Something went wrong. Please try again.' };
-            setMessages(prev => [...prev, errorMessage]);
-        } finally {
-            setIsLoading(false);
-        }
     };
 
     return (
-        <div className="fixed bottom-24 right-6 w-[90vw] max-w-md z-50 animate-in slide-in-from-bottom-5 slide-in-from-right-5 duration-300">
+        <motion.div 
+            className="fixed bottom-24 right-6 w-[90vw] max-w-md z-50"
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        >
             <Card className="flex flex-col h-[60vh] shadow-2xl">
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -84,7 +57,7 @@ export function Chatbot({ onClose }: ChatbotProps) {
                     </Button>
                 </CardHeader>
                 <CardContent className="flex-1 overflow-hidden p-0">
-                    <ScrollArea className="h-full p-6" ref={scrollAreaRef}>
+                    <ScrollArea className="h-full p-6" viewportRef={viewportRef}>
                         <div className="space-y-4">
                             {messages.map((msg, index) => (
                                 <div key={index} className={cn("flex items-start gap-3", msg.role === 'user' ? "justify-end" : "justify-start")}>
@@ -124,6 +97,6 @@ export function Chatbot({ onClose }: ChatbotProps) {
                     </form>
                 </CardFooter>
             </Card>
-        </div>
+        </motion.div>
     );
 }
