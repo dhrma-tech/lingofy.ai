@@ -1,4 +1,5 @@
 
+
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/Tabs";
 import { LayoutDashboard, PenSquare, Star, MessageSquare } from 'lucide-react';
@@ -37,19 +38,23 @@ function App() {
     if (!message.trim() || isChatLoading) return;
 
     const userMessage: Message = { role: 'user', content: message };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    // The initial greeting from the model should not be part of the API history.
+    const messagesForApi = [...messages.slice(1), userMessage];
+    
+    setMessages(prev => [...prev, userMessage]);
     setChatIsLoading(true);
 
     try {
         const response = await fetch('/api/v1/chat', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: newMessages }),
+          body: JSON.stringify({ messages: messagesForApi }),
         });
 
         if (!response.ok) {
-          throw new Error(`API error: ${response.statusText}`);
+          // Try to get a specific error message from the server's JSON response
+          const errorData = await response.json().catch(() => null);
+          throw new Error(errorData?.error || `The server responded with status: ${response.status}`);
         }
         
         const result = await response.json();
@@ -57,7 +62,9 @@ function App() {
         setMessages(prev => [...prev, modelMessage]);
     } catch (error) {
         console.error('Chat API error:', error);
-        const errorMessage: Message = { role: 'model', content: 'Oops! Something went wrong. Please try again.' };
+        // Display the specific error message in the chat
+        const messageText = error instanceof Error ? error.message : 'An unknown error occurred. Please try again.';
+        const errorMessage: Message = { role: 'model', content: `Sorry, I ran into an issue: ${messageText}` };
         setMessages(prev => [...prev, errorMessage]);
     } finally {
         setChatIsLoading(false);

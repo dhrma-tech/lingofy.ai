@@ -1,2 +1,2 @@
-// FIX: Commented out to resolve "Cannot find type definition file for 'vite/client'".
-// /// <reference types="vite/client" />
+// This file is intentionally left blank to resolve a type definition error.
+// The project does not currently use Vite's client-side environment variables.

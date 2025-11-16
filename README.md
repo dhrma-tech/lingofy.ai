@@ -35,14 +35,16 @@ First, set up and run the Express server.
     npm install
     ```
 
-3.  **Create an environment file:** Create a new file named `.env` in the `lingofy/server` directory.
+3.  **Create and configure your environment file:**
+    In the `lingofy/server` directory, you **must** create a new file named `.env`. This file securely stores your secret API key where the server can access it.
 
-4.  **Add your API key:** Add your Google Gemini API key to the `.env` file.
-    ```
+    Add your Google Gemini API key to the `.env` file like this:
+    ```env
     API_KEY=YOUR_GEMINI_API_KEY_HERE
     ```
+    Replace `YOUR_GEMINI_API_KEY_HERE` with your actual key.
 
-5.  **Start the server:**
+4.  **Start the server:**
     ```bash
     npm start
     ```

@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+// FIX: Changed to ES module syntax for consistency with the project setup.
+export default {
   darkMode: ["class"],
   content: [
     './pages/**/*.{ts,tsx}',

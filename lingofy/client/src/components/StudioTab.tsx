@@ -1,4 +1,5 @@
 
+
 import { useState, useRef, ChangeEvent } from "react";
 import { INITIAL_DATA, LingofyData } from "../lib/data";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/Card";
@@ -40,19 +41,23 @@ export function StudioTab() {
 
     const handleFormChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value, type } = e.target;
-        if (!name.includes('.')) return;
-
-        const [section, field] = name.split('.') as [keyof LingofyData, string];
-
         const parsedValue = type === 'number' ? parseFloat(value) || 0 : value;
 
-        setFormData(prev => ({
-            ...prev,
-            [section]: {
-                ...prev[section],
-                [field]: parsedValue,
-            },
-        }));
+        if (name.includes('.')) {
+            const [section, field] = name.split('.') as [keyof LingofyData, string];
+            setFormData(prev => ({
+                ...prev,
+                [section]: {
+                    ...prev[section],
+                    [field]: parsedValue,
+                },
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: parsedValue,
+            }));
+        }
     };
     
     const readFilesAsDataURLs = (files: File[]): Promise<string[]> => {
@@ -125,8 +130,8 @@ export function StudioTab() {
             });
 
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.error || `HTTP error! status: ${response.status}`);
             }
 
             const result = await response.json();
@@ -139,7 +144,8 @@ export function StudioTab() {
             }
         } catch (error) {
             console.error("AI Image Generation Error:", error);
-            setImageError(`Failed to generate image. ${error instanceof Error ? error.message : ''}`);
+            const message = error instanceof Error ? error.message : 'An unknown error occurred.';
+            setImageError(`Image generation failed: ${message}`);
         } finally {
             setIsGenerating(false);
         }
@@ -187,7 +193,8 @@ export function StudioTab() {
             });
     
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.message || `Server responded with status: ${response.status}`);
             }
     
             const result = await response.json();
@@ -198,7 +205,8 @@ export function StudioTab() {
             }
         } catch (error) {
             console.error("Failed to save data:", error);
-            setSaveStatus({ type: 'error', message: 'An error occurred while saving. Please try again.' });
+            const message = error instanceof Error ? error.message : 'An unknown error occurred.';
+            setSaveStatus({ type: 'error', message: `Save failed: ${message}` });
         } finally {
             setIsLoading(false);
             setTimeout(() => setSaveStatus(null), 5000);

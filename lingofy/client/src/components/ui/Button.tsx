@@ -32,8 +32,6 @@ const buttonVariants = cva(
   }
 )
 
-// FIX: Changed from interface to type to fix issues with extending VariantProps.
-// This resolves errors where `variant` and `size` props were not recognized.
 export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean

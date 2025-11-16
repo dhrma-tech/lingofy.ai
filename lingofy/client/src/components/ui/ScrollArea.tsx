@@ -3,7 +3,6 @@ import * as ScrollAreaPrimitive from "@radix-ui/react-scroll-area"
 
 import { cn } from "../../lib/utils"
 
-// FIX: Changed from interface to type to handle props from React.ComponentPropsWithoutRef correctly.
 type ScrollAreaProps = React.ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> & {
   viewportRef?: React.Ref<HTMLDivElement>;
 };
