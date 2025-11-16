@@ -1,19 +1,127 @@
-<script type="importmap">
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lingofy Hub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="importmap">
 {
   "imports": {
+    "react": "https://aistudiocdn.com/react@^18.2.0",
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^18.2.0/client",
+    "clsx": "https://aistudiocdn.com/clsx@^2.1.1",
+    "tailwind-merge": "https://aistudiocdn.com/tailwind-merge@^2.3.0",
+    "class-variance-authority": "https://aistudiocdn.com/class-variance-authority@^0.7.0",
+    "@radix-ui/react-slot": "https://aistudiocdn.com/@radix-ui/react-slot@^1.0.2",
+    "@radix-ui/react-tabs": "https://aistudiocdn.com/@radix-ui/react-tabs@^1.0.4",
+    "@radix-ui/react-label": "https://aistudiocdn.com/@radix-ui/react-label@^2.0.2",
+    "@radix-ui/react-scroll-area": "https://aistudiocdn.com/@radix-ui/react-scroll-area@^1.0.5",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.379.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^0.14.0",
+    "framer-motion": "https://aistudiocdn.com/framer-motion@^11.2.10",
+    "react-intersection-observer": "https://aistudiocdn.com/react-intersection-observer@^9.10.2",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
     "express": "https://aistudiocdn.com/express@^5.1.0",
     "cors": "https://aistudiocdn.com/cors@^2.8.5",
     "path": "https://aistudiocdn.com/path@^0.12.7",
     "url": "https://aistudiocdn.com/url@^0.11.4",
     "vite": "https://aistudiocdn.com/vite@^7.2.2",
-    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "clsx": "https://aistudiocdn.com/clsx@^2.1.1",
-    "tailwind-merge": "https://aistudiocdn.com/tailwind-merge@^3.4.0",
-    "class-variance-authority": "https://aistudiocdn.com/class-variance-authority@^0.7.1",
-    "@radix-ui/react-slot": "https://aistudiocdn.com/@radix-ui/react-slot@^1.2.4"
+    "@vitejs/plugin-react": "https://aistudiocdn.com/@vitejs/plugin-react@^5.1.1"
   }
 }
 </script>
+    <style>
+      @tailwind base;
+      @tailwind components;
+      @tailwind utilities;
+
+      @layer base {
+        :root {
+          --background: 0 0% 100%;
+          --foreground: 224 71.4% 4.1%;
+          --card: 350 100% 98%;
+          --card-foreground: 224 71.4% 4.1%;
+          --popover: 0 0% 100%;
+          --popover-foreground: 224 71.4% 4.1%;
+          --primary: 336 80% 50%;
+          --primary-foreground: 0 0% 100%;
+          --secondary: 220 14.3% 95.9%;
+          --secondary-foreground: 220 9.1% 43.1%;
+          --muted: 350 50% 96%;
+          --muted-foreground: 225 8.9% 43.1%;
+          --accent: 350 60% 94%;
+          --accent-foreground: 220 9.1% 43.1%;
+          --destructive: 0 84.2% 60.2%;
+          --destructive-foreground: 0 0% 98%;
+          --border: 220 13% 91%;
+          --input: 220 13% 91%;
+          --ring: 336 80% 50%;
+          --radius: 0.75rem;
+        }
+
+        .dark {
+          /* Keeping the light theme for dark mode as per the minimalist Sakura-Tech aesthetic */
+          --background: 0 0% 100%;
+          --foreground: 224 71.4% 4.1%;
+          --card: 350 100% 98%;
+          --card-foreground: 224 71.4% 4.1%;
+          --popover: 0 0% 100%;
+          --popover-foreground: 224 71.4% 4.1%;
+          --primary: 336 80% 50%;
+          --primary-foreground: 0 0% 100%;
+          --secondary: 220 14.3% 95.9%;
+          --secondary-foreground: 220 9.1% 43.1%;
+          --muted: 350 50% 96%;
+          --muted-foreground: 225 8.9% 43.1%;
+          --accent: 350 60% 94%;
+          --accent-foreground: 220 9.1% 43.1%;
+          --destructive: 0 84.2% 60.2%;
+          --destructive-foreground: 0 0% 98%;
+          --border: 220 13% 91%;
+          --input: 220 13% 91%;
+          --ring: 336 80% 50%;
+        }
+      }
+
+      @layer base {
+        * {
+          @apply border-border;
+        }
+        body {
+          @apply bg-background text-foreground;
+          font-family: 'Inter', sans-serif;
+        }
+        @supports (font-variation-settings: normal) {
+          body {
+            font-family: 'Inter var', sans-serif;
+          }
+        }
+      }
+      
+      /* Custom Scrollbar for a more cohesive theme */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: hsl(var(--muted));
+      }
+      ::-webkit-scrollbar-thumb {
+        background: hsl(var(--primary) / 0.5);
+        border-radius: 10px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: hsl(var(--primary) / 0.7);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>

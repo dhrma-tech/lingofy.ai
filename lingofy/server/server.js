@@ -7,9 +7,10 @@ const port = 3001;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:3000'
+  origin: 'http://localhost:5173'
 }));
-app.use(express.json());
+// Increase the payload size limit to handle base64 images
+app.use(express.json({ limit: '10mb' }));
 
 // API Routes
 app.get('/api/v1/test', (req, res) => {

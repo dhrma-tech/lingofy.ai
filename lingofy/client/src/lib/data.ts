@@ -1,4 +1,3 @@
-
 export interface LingofyData {
     meta: {
         siteName: string;
