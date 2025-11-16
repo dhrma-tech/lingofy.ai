@@ -27,7 +27,8 @@
     "@google/genai": "^1.29.1",
     "framer-motion": "^12.23.24",
     "@radix-ui/react-scroll-area": "^1.2.10",
-    "react-intersection-observer": "^10.0.0"
+    "react-intersection-observer": "^10.0.0",
+    "multer": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "^22.14.0",
