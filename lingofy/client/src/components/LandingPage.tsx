@@ -67,9 +67,12 @@ function Loader() {
 }
 
 // Error boundary for the 3D scene
-// FIX: Refactored to use a class property for state, removing the constructor. This resolves TypeScript errors related to `this.state` and `this.props`.
+// FIX: Refactored to use a standard constructor for state initialization to ensure `this.props` is correctly typed.
 class CanvasErrorBoundary extends React.Component<{children: React.ReactNode}, { hasError: boolean }> {
-  state = { hasError: false };
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
 
   static getDerivedStateFromError() {
     return { hasError: true };
@@ -180,9 +183,9 @@ export function LandingPage({ onEnter, theme, setTheme }: LandingPageProps) {
                                 <p className="text-muted-foreground mt-2">Everything you need to succeed, right at your fingertips.</p>
                             </div>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                {/* FIX: Destructured feature properties and passed them explicitly to FeatureCard to resolve a TypeScript error related to the 'key' prop. */}
-                                {features.map(({ icon, title, description }, index) => (
-                                    <FeatureCard key={index} icon={icon} title={title} description={description} />
+                                {/* FIX: Switched to spreading the feature object as props to avoid a potential TypeScript issue with how `key` is handled in JSX. */}
+                                {features.map((feature, index) => (
+                                    <FeatureCard key={index} {...feature} />
                                 ))}
                             </div>
                         </motion.div>
