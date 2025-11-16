@@ -1,4 +1,5 @@
 {
   "name": "Copy of Lingofy",
-  "description": "Lingofy is a full-stack, 'global-first' e-commerce platform for small creators. This is the Hub dashboard for creators to manage their store content."
+  "description": "Lingofy is a full-stack, 'global-first' e-commerce platform for small creators. This is the Hub dashboard for creators to manage their store content.",
+  "requestFramePermissions": []
 }

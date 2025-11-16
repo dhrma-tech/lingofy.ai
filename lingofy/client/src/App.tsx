@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/Tabs";
 import { LayoutDashboard, PenSquare, Star, MessageSquare } from 'lucide-react';
@@ -10,11 +8,13 @@ import { Chatbot, Message } from "./components/Chatbot";
 import { Button } from "./components/ui/Button";
 import { LandingPage } from "./components/LandingPage";
 import { AnimatePresence } from "framer-motion";
+import { ThemeToggle } from "./components/ThemeToggle";
 
 function App() {
   const [apiStatus, setApiStatus] = useState("Checking...");
   const [showHub, setShowHub] = useState(false);
-  
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
   // Lifted Chatbot State
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -33,6 +33,13 @@ function App() {
       .then(data => setApiStatus(data.message))
       .catch(() => setApiStatus("❌ Lingofy API is down."));
   }, []);
+
+  useEffect(() => {
+      const root = window.document.documentElement;
+      root.classList.remove('light', 'dark');
+      root.classList.add(theme);
+  }, [theme]);
+
 
   const handleSendMessage = async (message: string) => {
     if (!message.trim() || isChatLoading) return;
@@ -72,7 +79,7 @@ function App() {
   };
 
   if (!showHub) {
-    return <LandingPage onEnter={() => setShowHub(true)} />;
+    return <LandingPage onEnter={() => setShowHub(true)} theme={theme} setTheme={setTheme} />;
   }
 
   return (
@@ -80,9 +87,12 @@ function App() {
       <div className="max-w-7xl mx-auto">
         <header className="flex items-center justify-between pb-4 border-b">
           <h1 className="text-3xl font-bold tracking-tight text-primary">Lingofy Hub</h1>
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span className={`w-2 h-2 rounded-full ${apiStatus.startsWith('🚀') ? 'bg-green-500' : 'bg-red-500'}`}></span>
-            <span>{apiStatus}</span>
+          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+            <ThemeToggle theme={theme} setTheme={setTheme} />
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${apiStatus.startsWith('🚀') ? 'bg-green-500' : 'bg-red-500'}`}></span>
+              <span>{apiStatus}</span>
+            </div>
           </div>
         </header>
 

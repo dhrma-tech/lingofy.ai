@@ -73,3 +73,25 @@ Next, set up and run the React client in a **new terminal window**.
     The client application will start on `http://localhost:5173`. It is configured to proxy API requests to the server running on port 3001.
 
 You can now open `http://localhost:5173` in your browser to use the application.
+
+---
+
+## Deployment on Render
+
+This project is configured for easy deployment to [Render](https://render.com/).
+
+### Blueprint Deployment (Recommended)
+
+1.  Push your code to a GitHub repository.
+2.  Go to the [Render Blueprint dashboard](https://dashboard.render.com/blueprints) and click "New Blueprint Instance".
+3.  Connect the repository containing this project.
+4.  Render will automatically detect the `render.yaml` file and configure the service.
+5.  You will need to add your `API_KEY` as a **secret environment variable** in the Render service settings.
+    -   Key: `API_KEY`
+    -   Value: `YOUR_GEMINI_API_KEY_HERE`
+6.  Click "Apply" or "Create" to deploy the application.
+
+The `render.yaml` file in this repository automatically configures a single web service that:
+- Installs dependencies for both the server and client.
+- Builds the React client for production.
+- Starts the Express server, which serves both the API and the built client files.

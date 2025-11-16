@@ -1,5 +1,7 @@
 
 
+
+
 import { useState, useRef, ChangeEvent } from "react";
 import { INITIAL_DATA, LingofyData } from "../lib/data";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/Card";
@@ -80,7 +82,8 @@ export function StudioTab() {
         const MAX_SIZE = 5 * 1024 * 1024; // 5MB
         const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
-        const validFiles = filesArray.filter(file => {
+        // FIX: Explicitly type the `file` parameter as `File` to resolve multiple type errors within this function.
+        const validFiles = filesArray.filter((file: File) => {
             if (file.size > MAX_SIZE) {
                 setImageError(`File "${file.name}" exceeds the 5MB size limit.`);
                 return false;

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: lingofy
+    env: node
+    plan: free
+    buildCommand: |
+      npm --prefix lingofy/server install
+      npm --prefix lingofy/client install
+      npm --prefix lingofy/client run build
+    startCommand: node lingofy/server/server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_KEY
+        sync: false

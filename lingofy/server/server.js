@@ -4,15 +4,14 @@ import cors from 'cors';
 import { GoogleGenAI, Modality } from '@google/genai';
 import multer from 'multer';
 import 'dotenv/config';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 // Middleware
-app.use(cors({
-  origin: 'http://localhost:5173'
-}));
-// Increase the payload size limit to handle base64 images
+app.use(cors()); // Use a more permissive CORS policy for deployment
 app.use(express.json({ limit: '10mb' }));
 
 // Setup for multer (for file uploads)
@@ -22,7 +21,9 @@ const upload = multer({ storage: multer.memoryStorage() });
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 
-// API Routes
+// =================================================================
+// API Routes - MUST be defined before the production static serving
+// =================================================================
 app.get('/api/v1/test', (req, res) => {
   res.json({ message: "🚀 Lingofy API is running!" });
 });
@@ -110,6 +111,27 @@ app.post('/api/v1/save', upload.array('images'), (req, res) => {
 
   res.status(200).json({ success: true, message: "Data saved successfully!" });
 });
+// =================================================================
+
+
+// Serve React App in Production
+if (process.env.NODE_ENV === 'production') {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  
+  // Resolve path to client build directory
+  const clientBuildPath = path.resolve(__dirname, '..', 'client', 'dist');
+
+  // Serve static files from the React app
+  app.use(express.static(clientBuildPath));
+
+  // The "catchall" handler: for any request that doesn't match one above,
+  // send back React's index.html file.
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(clientBuildPath, 'index.html'));
+  });
+}
+
 
 app.listen(port, () => {
   console.log(`Lingofy server listening on port ${port}`);
