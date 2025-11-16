@@ -1,20 +1,27 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/drive/15ZRcZFhAR7DTVjsn8F6Oi5Mfh7MChuVK
-
 ## Run Locally
 
-**Prerequisites:**  Node.js
+**Prerequisites:** Node.js
 
+This project has two parts: a client (frontend) and a server (backend). You must run them in **two separate terminals**.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+**Terminal 1: Run the Frontend (Client)**
+
+1.  Navigate to the client folder:
+    `cd lingofy/client`
+2.  Install dependencies:
+    `npm install`
+3.  Run the client app:
+    `npm run dev`
+4.  Your app will be available at `http://localhost:5173`.
+
+**Terminal 2: Run the Backend (Server)**
+
+1.  Navigate to the server folder:
+    `cd lingofy/server`
+2.  Install dependencies:
+    `npm install`
+3.  Set your API key *securely* (e.g., in a `.env` file):
+    `GEMINI_API_KEY="your_secret_key_here"`
+4.  Run the server:
+    `npm start`
+5.  Your API will be running at `http://localhost:3001`. The client is already configured to talk to it.
