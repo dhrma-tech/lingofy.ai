@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { GoogleGenAI, Modality } from '@google/genai';
 import multer from 'multer';
+import 'dotenv/config';
 
 const app = express();
 const port = 3001;

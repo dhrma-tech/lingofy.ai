@@ -1,20 +1,73 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Lingofy Hub
 
-# Run and deploy your AI Studio app
+Lingofy is the all-in-one hub for creators to build, manage, and grow their e-commerce brand with the power of AI.
 
-This contains everything you need to run your app locally.
+## Project Structure
 
-View your app in AI Studio: https://ai.studio/apps/drive/15ZRcZFhAR7DTVjsn8F6Oi5Mfh7MChuVK
+This project is a monorepo containing two main parts:
 
-## Run Locally
+-   `lingofy/client`: A React frontend application built with Vite. This is the user interface.
+-   `lingofy/server`: An Express.js backend server that securely handles API requests to the Google Gemini API and manages file uploads.
 
-**Prerequisites:**  Node.js
+**Important:** Do not run `npm` commands in the root directory. Always navigate to the `client` or `server` directory first.
 
+## Prerequisites
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+-   Node.js (v18 or higher)
+-   npm
+-   A Google Gemini API Key
+
+## Local Development Setup
+
+To run this project locally, you will need to run the client and server in two separate terminal windows.
+
+### 1. Backend Server Setup
+
+First, set up and run the Express server.
+
+1.  **Navigate to the server directory:**
+    ```bash
+    cd lingofy/server
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Create an environment file:** Create a new file named `.env` in the `lingofy/server` directory.
+
+4.  **Add your API key:** Add your Google Gemini API key to the `.env` file.
+    ```
+    API_KEY=YOUR_GEMINI_API_KEY_HERE
+    ```
+
+5.  **Start the server:**
+    ```bash
+    npm start
+    ```
+    The server will start on `http://localhost:3001`.
+
+---
+
+### 2. Frontend Client Setup
+
+Next, set up and run the React client in a **new terminal window**.
+
+1.  **Navigate to the client directory:**
+    ```bash
+    cd lingofy/client
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Start the client:**
+    ```bash
+    npm run dev
+    ```
+    The client application will start on `http://localhost:5173`. It is configured to proxy API requests to the server running on port 3001.
+
+You can now open `http://localhost:5173` in your browser to use the application.
