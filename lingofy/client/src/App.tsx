@@ -7,6 +7,7 @@ import { ReviewsTab } from "./components/ReviewsTab";
 import { Chatbot } from "./components/Chatbot";
 import { Button } from "./components/ui/Button";
 import { LandingPage } from "./components/LandingPage";
+import { AnimatePresence } from "framer-motion";
 
 
 function App() {
@@ -15,8 +16,15 @@ function App() {
   const [showHub, setShowHub] = useState(false);
 
   useEffect(() => {
-    // Mocking API status since there is no backend
-    setApiStatus("🚀 Lingofy API is running!");
+    fetch('/api/v1/test')
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('API request failed');
+        }
+        return res.json();
+      })
+      .then(data => setApiStatus(data.message))
+      .catch(() => setApiStatus("❌ Lingofy API is down."));
   }, []);
 
   if (!showHub) {
@@ -65,7 +73,9 @@ function App() {
         </div>
       </div>
       
-      {isChatOpen && <Chatbot onClose={() => setIsChatOpen(false)} />}
+      <AnimatePresence>
+        {isChatOpen && <Chatbot onClose={() => setIsChatOpen(false)} />}
+      </AnimatePresence>
 
       <div className="fixed bottom-6 right-6 z-50">
           <Button 

@@ -1,7 +1,7 @@
 import { useState, useRef, ChangeEvent } from "react";
 import { INITIAL_DATA, LingofyData } from "../lib/data";
 import { GoogleGenAI, Modality } from "@google/genai";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/Card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./ui/Card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/Tabs";
 import { Label } from "./ui/Label";
 import { Input } from "./ui/Input";
@@ -138,8 +138,6 @@ export function StudioTab() {
     const handleSave = async () => {
         setIsLoading(true);
         setSaveStatus(null);
-        setImageError(null);
-
         const dataToSave = {
             ...formData,
             product: {
@@ -148,14 +146,32 @@ export function StudioTab() {
             },
         };
 
-        console.log("Simulating save with data:", dataToSave);
-
-        // Simulate a successful API call
-        setTimeout(() => {
-            setSaveStatus({ type: 'success', message: 'Data saved successfully!' });
+        try {
+            const response = await fetch('/api/v1/save', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(dataToSave),
+            });
+    
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+    
+            const result = await response.json();
+            if (result.success) {
+                setSaveStatus({ type: 'success', message: result.message || 'Data saved successfully!' });
+            } else {
+                throw new Error(result.message || 'Failed to save data.');
+            }
+        } catch (error) {
+            console.error("Failed to save data:", error);
+            setSaveStatus({ type: 'error', message: 'An error occurred while saving. Please try again.' });
+        } finally {
             setIsLoading(false);
             setTimeout(() => setSaveStatus(null), 5000);
-        }, 1000);
+        }
     };
 
     return (
@@ -223,6 +239,9 @@ export function StudioTab() {
                                 </div>
                            </div>
                         </CardContent>
+                        <CardFooter>
+                           <p className="text-xs text-muted-foreground">Changes are saved when you click the "Save Changes" button.</p>
+                        </CardFooter>
                     </Card>
                 </TabsContent>
                 <TabsContent value="product">
